@@ -1,11 +1,8 @@
 namespace Il2Cpp {
     /** Creates a delegate object of the given delegate class. */
-    export function delegate<P extends Il2Cpp.Parameter.Type[], R extends Il2Cpp.Method.ReturnType>(
-        klass: Il2Cpp.Class,
-        block: (...args: P) => R
-    ): Il2Cpp.Object {
-        const SystemDelegate = Il2Cpp.corlib.class("System.Delegate");
-        const SystemMulticastDelegate = Il2Cpp.corlib.class("System.MulticastDelegate");
+    export function delegate<P extends Parameter.Type[], R extends Method.ReturnType>(klass: Class, block: (...args: P) => R): Object {
+        const SystemDelegate = corlib.class("System.Delegate");
+        const SystemMulticastDelegate = corlib.class("System.MulticastDelegate");
 
         if (!SystemDelegate.isAssignableFrom(klass)) {
             raise(`cannot create a delegate for ${klass.type.name} as it's a non-delegate class`);

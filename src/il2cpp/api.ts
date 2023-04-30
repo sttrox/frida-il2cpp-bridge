@@ -567,26 +567,26 @@ namespace Il2Cpp {
         const offsetOfInt32 = new NativeFunction(offsetsFinderCModule.offset_of_int32, "int16", ["pointer", "int32"]);
         const offsetOfPointer = new NativeFunction(offsetsFinderCModule.offset_of_pointer, "int16", ["pointer", "pointer"]);
 
-        const SystemString = Il2Cpp.corlib.class("System.String");
-        const SystemDateTime = Il2Cpp.corlib.class("System.DateTime");
-        const SystemReflectionModule = Il2Cpp.corlib.class("System.Reflection.Module");
+        const SystemString = corlib.class("System.String");
+        const SystemDateTime = corlib.class("System.DateTime");
+        const SystemReflectionModule = corlib.class("System.Reflection.Module");
 
         SystemDateTime.initialize();
         SystemReflectionModule.initialize();
 
         const DaysToMonth365 = (
-            SystemDateTime.tryField<Il2Cpp.Array<number>>("daysmonth") ??
-            SystemDateTime.tryField<Il2Cpp.Array<number>>("DaysToMonth365") ??
-            SystemDateTime.field<Il2Cpp.Array<number>>("s_daysToMonth365")
+            SystemDateTime.tryField<Array<number>>("daysmonth") ??
+            SystemDateTime.tryField<Array<number>>("DaysToMonth365") ??
+            SystemDateTime.field<Array<number>>("s_daysToMonth365")
         ).value;
 
-        const FilterTypeName = SystemReflectionModule.field<Il2Cpp.Object>("FilterTypeName").value;
+        const FilterTypeName = SystemReflectionModule.field<Object>("FilterTypeName").value;
         const FilterTypeNameMethodPointer = FilterTypeName.field<NativePointer>("method_ptr").value;
         const FilterTypeNameMethod = FilterTypeName.field<NativePointer>("method").value;
         const FilterTypeNameInvoke = FilterTypeName.method("Invoke");
 
         const defines = `
-            #define IL2CPP_STRING_SET_LENGTH_OFFSET ${offsetOfInt32(Il2Cpp.string("vfsfitvnm"), 9)}
+            #define IL2CPP_STRING_SET_LENGTH_OFFSET ${offsetOfInt32(string("vfsfitvnm"), 9)}
             #define IL2CPP_ARRAY_GET_ELEMENTS_OFFSET ${offsetOfInt32(DaysToMonth365, 31) - 1}
             #define IL2CPP_CLASS_GET_ACTUAL_INSTANCE_SIZE_OFFSET ${offsetOfInt32(SystemString, SystemString.instanceSize - 2)}
             #define IL2CPP_METHOD_GET_POINTER_OFFSET ${offsetOfPointer(FilterTypeNameMethod, FilterTypeNameMethodPointer)}
@@ -612,7 +612,7 @@ namespace Il2Cpp {
     }
 
     function r<R extends NativeFunctionReturnType, A extends NativeFunctionArgumentType[] | []>(exportName: string, retType: R, argTypes: A) {
-        const exportPointer = Il2Cpp.module.findExportByName(exportName) ?? (cModule ??= buildCModule())[exportName];
+        const exportPointer = module.findExportByName(exportName) ?? (cModule ??= buildCModule())[exportName];
 
         if (exportPointer == null) {
             raise(`couldn't resolve export ${exportName}`);

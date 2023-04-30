@@ -3,9 +3,9 @@ namespace Il2Cpp {
     export async function perform<T>(block: () => T | Promise<T>): Promise<T> {
         await initialize();
 
-        let thread = Il2Cpp.currentThread;
+        let thread = currentThread;
         const isForeignThread = thread == null;
-        thread ??= Il2Cpp.domain.attach();
+        thread ??= domain.attach();
 
         try {
             const result = block();

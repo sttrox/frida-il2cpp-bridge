@@ -1,63 +1,63 @@
 namespace Il2Cpp {
-    export class Field<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type> extends NativeStruct {
+    export class Field<T extends Field.Type = Field.Type> extends NativeStruct {
         /** Gets the class in which this field is defined. */
         @lazy
-        get class(): Il2Cpp.Class {
-            return new Il2Cpp.Class(Il2Cpp.api.fieldGetClass(this));
+        get class(): Class {
+            return new Class(api.fieldGetClass(this));
         }
 
         /** Gets the flags of the current field. */
         @lazy
         get flags(): number {
-            return Il2Cpp.api.fieldGetFlags(this);
+            return api.fieldGetFlags(this);
         }
 
         /** Determines whether this field value is known at compile time. */
         @lazy
         get isLiteral(): boolean {
-            return !!Il2Cpp.api.fieldIsLiteral(this);
+            return !!api.fieldIsLiteral(this);
         }
 
         /** Determines whether this field is static. */
         @lazy
         get isStatic(): boolean {
-            return !!Il2Cpp.api.fieldIsStatic(this);
+            return !!api.fieldIsStatic(this);
         }
 
         /** Determines whether this field is thread static. */
         @lazy
         get isThreadStatic(): boolean {
-            return !!Il2Cpp.api.fieldIsThreadStatic(this);
+            return !!api.fieldIsThreadStatic(this);
         }
 
         /** Gets the access modifier of this field. */
         @lazy
         get modifier(): string {
-            return Il2Cpp.api.fieldGetModifier(this).readUtf8String()!;
+            return api.fieldGetModifier(this).readUtf8String()!;
         }
 
         /** Gets the name of this field. */
         @lazy
         get name(): string {
-            return Il2Cpp.api.fieldGetName(this).readUtf8String()!;
+            return api.fieldGetName(this).readUtf8String()!;
         }
 
         /** Gets the offset of this field, calculated as the difference with its owner virtual address. */
         @lazy
         get offset(): number {
-            return Il2Cpp.api.fieldGetOffset(this);
+            return api.fieldGetOffset(this);
         }
 
         /** Gets the type of this field. */
         @lazy
-        get type(): Il2Cpp.Type {
-            return new Il2Cpp.Type(Il2Cpp.api.fieldGetType(this));
+        get type(): Type {
+            return new Type(api.fieldGetType(this));
         }
 
         /** Gets the value of this field. */
         get value(): T {
             const handle = Memory.alloc(Process.pointerSize);
-            Il2Cpp.api.fieldGetStaticValue(this.handle, handle);
+            api.fieldGetStaticValue(this.handle, handle);
 
             return read(handle, this.type) as T;
         }
@@ -71,7 +71,7 @@ namespace Il2Cpp {
             const handle = Memory.alloc(Process.pointerSize);
             write(handle, value, this.type);
 
-            Il2Cpp.api.fieldSetStaticValue(this.handle, handle);
+            api.fieldSetStaticValue(this.handle, handle);
         }
 
         /** */
@@ -81,26 +81,26 @@ ${this.isThreadStatic ? `[ThreadStatic] ` : ``}\
 ${this.isStatic ? `static ` : ``}\
 ${this.type.name} \
 ${this.name}\
-${this.isLiteral ? ` = ${this.type.class.isEnum ? read((this.value as Il2Cpp.ValueType).handle, this.type.class.baseType!) : this.value}` : ``};\
+${this.isLiteral ? ` = ${this.type.class.isEnum ? read((this.value as ValueType).handle, this.type.class.baseType!) : this.value}` : ``};\
 ${this.isThreadStatic || this.isLiteral ? `` : ` // 0x${this.offset.toString(16)}`}`;
         }
 
         /** @internal */
-        withHolder(instance: Il2Cpp.Object | Il2Cpp.ValueType): Il2Cpp.Field<T> {
+        withHolder(instance: Object | ValueType): Field<T> {
             let valueHandle = instance.handle.add(this.offset);
-            if (instance instanceof Il2Cpp.ValueType) {
-                valueHandle = valueHandle.sub(Il2Cpp.Object.headerSize);
+            if (instance instanceof ValueType) {
+                valueHandle = valueHandle.sub(Object.headerSize);
             }
 
             return new Proxy(this, {
-                get(target: Il2Cpp.Field<T>, property: keyof Il2Cpp.Field): any {
+                get(target: Field<T>, property: keyof Field): any {
                     if (property == "value") {
                         return read(valueHandle, target.type);
                     }
                     return Reflect.get(target, property);
                 },
 
-                set(target: Il2Cpp.Field<T>, property: keyof Il2Cpp.Field, value: any): boolean {
+                set(target: Field<T>, property: keyof Field, value: any): boolean {
                     if (property == "value") {
                         write(valueHandle, value, target.type);
                         return true;
@@ -113,7 +113,7 @@ ${this.isThreadStatic || this.isLiteral ? `` : ` // 0x${this.offset.toString(16)
     }
 
     export namespace Field {
-        export type Type = boolean | number | Int64 | UInt64 | NativePointer | Il2Cpp.Pointer | Il2Cpp.ValueType | Il2Cpp.Object | Il2Cpp.String | Il2Cpp.Array;
+        export type Type = boolean | number | Int64 | UInt64 | NativePointer | Pointer | ValueType | Object | String | Array;
 
         export const enum Attributes {
             FieldAccessMask = 0x0007,

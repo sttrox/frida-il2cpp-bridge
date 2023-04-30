@@ -52,8 +52,8 @@ namespace Il2Cpp {
     }, lazy);
 
     function unityEngineCall(method: string): string | null {
-        const call = Il2Cpp.api.resolveInternalCall(Memory.allocUtf8String("UnityEngine.Application::" + method));
-        const string = call.isNull() ? null : new Il2Cpp.String(new NativeFunction(call, "pointer", [])());
+        const call = api.resolveInternalCall(Memory.allocUtf8String("UnityEngine.Application::" + method));
+        const string = call.isNull() ? null : new String(new NativeFunction(call, "pointer", [])());
         return string?.isNull() ? null : string?.content ?? null;
     }
 }

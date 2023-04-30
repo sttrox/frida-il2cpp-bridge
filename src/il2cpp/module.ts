@@ -41,12 +41,12 @@ namespace Il2Cpp {
 
             Reflect.defineProperty(Il2Cpp, "moduleName", { value: il2cppModuleName });
         } else {
-            await forModule(Il2Cpp.moduleName);
+            await forModule(moduleName);
         }
 
-        if (Il2Cpp.api.getCorlib().isNull()) {
+        if (api.getCorlib().isNull()) {
             await new Promise<void>(resolve => {
-                const interceptor = Interceptor.attach(Il2Cpp.api.init, {
+                const interceptor = Interceptor.attach(api.init, {
                     onLeave() {
                         interceptor.detach();
                         setImmediate(resolve);

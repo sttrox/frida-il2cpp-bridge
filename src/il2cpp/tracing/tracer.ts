@@ -1,10 +1,10 @@
 namespace Il2Cpp {
-    export class Tracer extends Il2Cpp.AbstractTracer {
+    export class Tracer extends AbstractTracer {
         /** @internal */
         private withParameters: boolean = false;
 
         /** Determines whether print parameters. */
-        parameters(value: boolean): Il2Cpp.AbstractTracer.ChooseTargets {
+        parameters(value: boolean): AbstractTracer.ChooseTargets {
             this.withParameters = value;
             return this;
         }
@@ -28,10 +28,10 @@ namespace Il2Cpp {
                         });
                     } catch (e: any) {}
                 } else {
-                    const startIndex = +!target.isStatic | +Il2Cpp.unityVersionIsBelow201830;
+                    const startIndex = +!target.isStatic | +unityVersionIsBelow201830;
 
                     const callback = (...args: any[]): any => {
-                        const thisParameter = target.isStatic ? undefined : new Il2Cpp.Parameter("this", -1, target.class.type);
+                        const thisParameter = target.isStatic ? undefined : new Parameter("this", -1, target.class.type);
                         const parameters = thisParameter ? [thisParameter].concat(target.parameters) : target.parameters;
 
                         inform(`\
@@ -57,8 +57,8 @@ ${returnValue == undefined ? `` : ` = \x1b[36m${fromFridaValue(returnValue, targ
         }
     }
 
-    /** Creates a new `Il2Cpp.Tracer` instance. */
-    export function trace(): Pick<Il2Cpp.Tracer, "parameters"> {
-        return new Il2Cpp.Tracer();
+    /** Creates a new `Tracer` instance. */
+    export function trace(): Pick<Tracer, "parameters"> {
+        return new Tracer();
     }
 }

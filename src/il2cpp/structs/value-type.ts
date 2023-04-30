@@ -1,16 +1,16 @@
 namespace Il2Cpp {
     export class ValueType extends NativeStruct {
-        constructor(handle: NativePointer, readonly type: Il2Cpp.Type) {
+        constructor(handle: NativePointer, readonly type: Type) {
             super(handle);
         }
 
         /** Boxes the current value type in a object. */
-        box(): Il2Cpp.Object {
-            return new Il2Cpp.Object(Il2Cpp.api.valueBox(this.type.class, this));
+        box(): Object {
+            return new Object(api.valueBox(this.type.class, this));
         }
 
         /** Gets the field with the given name. */
-        field<T extends Il2Cpp.Field.Type>(name: string): Il2Cpp.Field<T> {
+        field<T extends Field.Type>(name: string): Field<T> {
             return this.type.class.field<T>(name).withHolder(this);
         }
 

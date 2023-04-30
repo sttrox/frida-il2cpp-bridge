@@ -1,6 +1,6 @@
 namespace Il2Cpp {
-    export class Pointer<T extends Il2Cpp.Field.Type = Il2Cpp.Field.Type> extends NativeStruct {
-        constructor(handle: NativePointer, readonly type: Il2Cpp.Type) {
+    export class Pointer<T extends Field.Type = Field.Type> extends NativeStruct {
+        constructor(handle: NativePointer, readonly type: Type) {
             super(handle);
         }
 

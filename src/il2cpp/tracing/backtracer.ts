@@ -1,6 +1,6 @@
 namespace Il2Cpp {
     /** Backtracing utilities. */
-    export class Backtracer extends Il2Cpp.AbstractTracer {
+    export class Backtracer extends AbstractTracer {
         /** @internal */
         private mode?: globalThis.Backtracer;
 
@@ -8,18 +8,18 @@ namespace Il2Cpp {
         private isVerbose: boolean = true;
 
         /** @internal */
-        readonly methodList = Il2Cpp.domain.assemblies
+        readonly methodList = domain.assemblies
             .flatMap(_ => _.image.classes.flatMap(_ => _.methods.filter(_ => !_.virtualAddress.isNull())))
             .sort((_, __) => _.virtualAddress.compare(__.virtualAddress));
 
         /** */
-        strategy(value: "fuzzy" | "accurate"): Pick<Il2Cpp.Backtracer, "verbose"> {
+        strategy(value: "fuzzy" | "accurate"): Pick<Backtracer, "verbose"> {
             this.mode = (globalThis as any).Backtracer[value.toUpperCase()];
             return this;
         }
 
         /** Determines whether print duplicate logs. */
-        verbose(value: boolean): Il2Cpp.AbstractTracer.ChooseTargets {
+        verbose(value: boolean): AbstractTracer.ChooseTargets {
             this.isVerbose = value;
             return this;
         }
@@ -52,10 +52,7 @@ namespace Il2Cpp {
                         let i = 0;
 
                         for (const address of backtrace) {
-                            const method =
-                                address >= Il2Cpp.module.base && address < Il2Cpp.module.base.add(Il2Cpp.module.size)
-                                    ? backtracer.searchInsert(address)
-                                    : undefined;
+                            const method = address >= module.base && address < module.base.add(module.size) ? backtracer.searchInsert(address) : undefined;
 
                             const decoration = i == 0 ? "" : `${" ".repeat((i - 1) * 2)}└─`;
 
@@ -85,7 +82,7 @@ ${method.class.type.name}.\x1b[1m${method.name}\x1b[0m`);
         }
 
         /** @internal */
-        private searchInsert(target: NativePointer): Il2Cpp.Method {
+        private searchInsert(target: NativePointer): Method {
             let left = 0;
             let right = this.methodList.length - 1;
 
@@ -105,8 +102,8 @@ ${method.class.type.name}.\x1b[1m${method.name}\x1b[0m`);
         }
     }
 
-    /** Creates a new `Il2Cpp.Backtracer` instance. */
-    export function backtrace(): Pick<Il2Cpp.Backtracer, "strategy"> {
-        return new Il2Cpp.Backtracer();
+    /** Creates a new `Backtracer` instance. */
+    export function backtrace(): Pick<Backtracer, "strategy"> {
+        return new Backtracer();
     }
 }

@@ -3,99 +3,99 @@ namespace Il2Cpp {
         /** Gets the Il2CppObject struct size, possibly equal to `Process.pointerSize * 2`. */
         @lazy
         static get headerSize(): number {
-            return Il2Cpp.corlib.class("System.Object").instanceSize;
+            return corlib.class("System.Object").instanceSize;
         }
 
         /** Gets the class of this object. */
         @lazy
-        get class(): Il2Cpp.Class {
-            return new Il2Cpp.Class(Il2Cpp.api.objectGetClass(this));
+        get class(): Class {
+            return new Class(api.objectGetClass(this));
         }
 
         /** Gets the size of the current object. */
         @lazy
         get size(): number {
-            return Il2Cpp.api.objectGetSize(this);
+            return api.objectGetSize(this);
         }
 
         /** Acquires an exclusive lock on the current object. */
         enter(): void {
-            return Il2Cpp.api.monitorEnter(this);
+            return api.monitorEnter(this);
         }
 
         /** Release an exclusive lock on the current object. */
         exit(): void {
-            return Il2Cpp.api.monitorExit(this);
+            return api.monitorExit(this);
         }
 
         /** Gets the field with the given name. */
-        field<T extends Il2Cpp.Field.Type>(name: string): Il2Cpp.Field<T> {
+        field<T extends Field.Type>(name: string): Field<T> {
             return this.class.field<T>(name).withHolder(this);
         }
 
         /** Gets the method with the given name. */
-        method<T extends Il2Cpp.Method.ReturnType>(name: string, parameterCount: number = -1): Il2Cpp.Method<T> {
+        method<T extends Method.ReturnType>(name: string, parameterCount: number = -1): Method<T> {
             return this.class.method<T>(name, parameterCount).withHolder(this);
         }
 
         /** Notifies a thread in the waiting queue of a change in the locked object's state. */
         pulse(): void {
-            return Il2Cpp.api.monitorPulse(this);
+            return api.monitorPulse(this);
         }
 
         /** Notifies all waiting threads of a change in the object's state. */
         pulseAll(): void {
-            return Il2Cpp.api.monitorPulseAll(this);
+            return api.monitorPulseAll(this);
         }
 
         /** Creates a reference to this object. */
-        ref(pin: boolean): Il2Cpp.GCHandle {
-            return new Il2Cpp.GCHandle(Il2Cpp.api.gcHandleNew(this, +pin));
+        ref(pin: boolean): GCHandle {
+            return new GCHandle(api.gcHandleNew(this, +pin));
         }
 
         /** Gets the correct virtual method from the given virtual method. */
-        virtualMethod<T extends Il2Cpp.Method.ReturnType>(method: Il2Cpp.Method): Il2Cpp.Method<T> {
-            return new Il2Cpp.Method<T>(Il2Cpp.api.objectGetVirtualMethod(this, method)).withHolder(this);
+        virtualMethod<T extends Method.ReturnType>(method: Method): Method<T> {
+            return new Method<T>(api.objectGetVirtualMethod(this, method)).withHolder(this);
         }
 
         /** Attempts to acquire an exclusive lock on the current object. */
         tryEnter(timeout: number): boolean {
-            return !!Il2Cpp.api.monitorTryEnter(this, timeout);
+            return !!api.monitorTryEnter(this, timeout);
         }
 
         /** Gets the field with the given name. */
-        tryField<T extends Il2Cpp.Field.Type>(name: string): Il2Cpp.Field<T> | undefined {
+        tryField<T extends Field.Type>(name: string): Field<T> | undefined {
             return this.class.tryField<T>(name)?.withHolder(this);
         }
 
         /** Gets the field with the given name. */
-        tryMethod<T extends Il2Cpp.Method.ReturnType>(name: string, parameterCount: number = -1): Il2Cpp.Method<T> | undefined {
+        tryMethod<T extends Method.ReturnType>(name: string, parameterCount: number = -1): Method<T> | undefined {
             return this.class.tryMethod<T>(name, parameterCount)?.withHolder(this);
         }
 
         /** Releases the lock on an object and attempts to block the current thread until it reacquires the lock. */
         tryWait(timeout: number): boolean {
-            return !!Il2Cpp.api.monitorTryWait(this, timeout);
+            return !!api.monitorTryWait(this, timeout);
         }
 
         /** */
         toString(): string {
-            return this.isNull() ? "null" : this.method<Il2Cpp.String>("ToString").invoke().content ?? "null";
+            return this.isNull() ? "null" : this.method<String>("ToString").invoke().content ?? "null";
         }
 
         /** Unboxes the value type out of this object. */
-        unbox(): Il2Cpp.ValueType {
-            return new Il2Cpp.ValueType(Il2Cpp.api.objectUnbox(this), this.class.type);
+        unbox(): ValueType {
+            return new ValueType(api.objectUnbox(this), this.class.type);
         }
 
         /** Releases the lock on an object and blocks the current thread until it reacquires the lock. */
         wait(): void {
-            return Il2Cpp.api.monitorWait(this);
+            return api.monitorWait(this);
         }
 
         /** Creates a weak reference to this object. */
-        weakRef(trackResurrection: boolean): Il2Cpp.GCHandle {
-            return new Il2Cpp.GCHandle(Il2Cpp.api.gcHandleNewWeakRef(this, +trackResurrection));
+        weakRef(trackResurrection: boolean): GCHandle {
+            return new GCHandle(api.gcHandleNewWeakRef(this, +trackResurrection));
         }
     }
 }

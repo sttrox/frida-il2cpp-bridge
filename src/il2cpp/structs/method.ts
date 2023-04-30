@@ -1,22 +1,22 @@
 namespace Il2Cpp {
-    export class Method<T extends Il2Cpp.Method.ReturnType = Il2Cpp.Method.ReturnType> extends NativeStruct {
+    export class Method<T extends Method.ReturnType = Method.ReturnType> extends NativeStruct {
         /** Gets the class in which this method is defined. */
         @lazy
-        get class(): Il2Cpp.Class {
-            return new Il2Cpp.Class(Il2Cpp.api.methodGetClass(this));
+        get class(): Class {
+            return new Class(api.methodGetClass(this));
         }
 
         /** Gets the flags of the current method. */
         @lazy
         get flags(): number {
-            return Il2Cpp.api.methodGetFlags(this, NULL);
+            return api.methodGetFlags(this, NULL);
         }
 
         /** Gets the implementation flags of the current method. */
         @lazy
         get implementationFlags(): number {
             const implementationFlagsPointer = Memory.alloc(Process.pointerSize);
-            Il2Cpp.api.methodGetFlags(this, implementationFlagsPointer);
+            api.methodGetFlags(this, implementationFlagsPointer);
 
             return implementationFlagsPointer.readU32();
         }
@@ -30,7 +30,7 @@ namespace Il2Cpp {
                 types.push(parameter.type.fridaAlias);
             }
 
-            if (!this.isStatic || Il2Cpp.unityVersionIsBelow201830) {
+            if (!this.isStatic || unityVersionIsBelow201830) {
                 types.unshift("pointer");
             }
 
@@ -48,49 +48,49 @@ namespace Il2Cpp {
                 return 0;
             }
 
-            return this.object.method<Il2Cpp.Array>("GetGenericArguments").invoke().length;
+            return this.object.method<Array>("GetGenericArguments").invoke().length;
         }
 
         /** Determines whether this method is external. */
         @lazy
         get isExternal(): boolean {
-            return !!Il2Cpp.api.methodIsExternal(this);
+            return !!api.methodIsExternal(this);
         }
 
         /** Determines whether this method is generic. */
         @lazy
         get isGeneric(): boolean {
-            return !!Il2Cpp.api.methodIsGeneric(this);
+            return !!api.methodIsGeneric(this);
         }
 
         /** Determines whether this method is inflated (generic with a concrete type parameter). */
         @lazy
         get isInflated(): boolean {
-            return !!Il2Cpp.api.methodIsInflated(this);
+            return !!api.methodIsInflated(this);
         }
 
         /** Determines whether this method is static. */
         @lazy
         get isStatic(): boolean {
-            return !Il2Cpp.api.methodIsInstance(this);
+            return !api.methodIsInstance(this);
         }
 
         /** Determines whether this method is synchronized. */
         @lazy
         get isSynchronized(): boolean {
-            return !!Il2Cpp.api.methodIsSynchronized(this);
+            return !!api.methodIsSynchronized(this);
         }
 
         /** Gets the access modifier of this method. */
         @lazy
         get modifier(): string {
-            return Il2Cpp.api.methodGetModifier(this).readUtf8String()!;
+            return api.methodGetModifier(this).readUtf8String()!;
         }
 
         /** Gets the name of this method. */
         @lazy
         get name(): string {
-            return Il2Cpp.api.methodGetName(this).readUtf8String()!;
+            return api.methodGetName(this).readUtf8String()!;
         }
 
         /** @internal */
@@ -101,46 +101,46 @@ namespace Il2Cpp {
 
         /** Gets the encompassing object of the current method. */
         @lazy
-        get object(): Il2Cpp.Object {
-            return new Il2Cpp.Object(Il2Cpp.api.methodGetObject(this, NULL));
+        get object(): Object {
+            return new Object(api.methodGetObject(this, NULL));
         }
 
         /** Gets the amount of parameters of this method. */
         @lazy
         get parameterCount(): number {
-            return Il2Cpp.api.methodGetParameterCount(this);
+            return api.methodGetParameterCount(this);
         }
 
         /** Gets the parameters of this method. */
         @lazy
-        get parameters(): Il2Cpp.Parameter[] {
+        get parameters(): Parameter[] {
             return globalThis.Array.from(globalThis.Array(this.parameterCount), (_, i) => {
-                const parameterName = Il2Cpp.api.methodGetParameterName(this, i).readUtf8String()!;
-                const parameterType = Il2Cpp.api.methodGetParameterType(this, i);
-                return new Il2Cpp.Parameter(parameterName, i, new Il2Cpp.Type(parameterType));
+                const parameterName = api.methodGetParameterName(this, i).readUtf8String()!;
+                const parameterType = api.methodGetParameterType(this, i);
+                return new Parameter(parameterName, i, new Type(parameterType));
             });
         }
 
         /** Gets the relative virtual address (RVA) of this method. */
         @lazy
         get relativeVirtualAddress(): NativePointer {
-            return this.virtualAddress.sub(Il2Cpp.module.base);
+            return this.virtualAddress.sub(module.base);
         }
 
         /** Gets the return type of this method. */
         @lazy
-        get returnType(): Il2Cpp.Type {
-            return new Il2Cpp.Type(Il2Cpp.api.methodGetReturnType(this));
+        get returnType(): Type {
+            return new Type(api.methodGetReturnType(this));
         }
 
         /** Gets the virtual address (VA) to this method. */
         @lazy
         get virtualAddress(): NativePointer {
-            return Il2Cpp.api.methodGetPointer(this);
+            return api.methodGetPointer(this);
         }
 
         /** Replaces the body of this method. */
-        set implementation(block: (this: Il2Cpp.Class | Il2Cpp.Object, ...parameters: any[]) => T) {
+        set implementation(block: (this: Class | Object, ...parameters: any[]) => T) {
             try {
                 Interceptor.replace(this.virtualAddress, this.wrap(block));
             } catch (e: any) {
@@ -160,7 +160,7 @@ namespace Il2Cpp {
         }
 
         /** Creates a generic instance of the current generic method. */
-        inflate<R extends Il2Cpp.Method.ReturnType = T>(...classes: Il2Cpp.Class[]): Il2Cpp.Method<R> {
+        inflate<R extends Method.ReturnType = T>(...classes: Class[]): Method<R> {
             if (!this.isGeneric) {
                 raise(`cannot inflate method ${this.name} as it has no generic parameters`);
             }
@@ -170,25 +170,25 @@ namespace Il2Cpp {
             }
 
             const types = classes.map(_ => _.type.object);
-            const typeArray = Il2Cpp.array(Il2Cpp.corlib.class("System.Type"), types);
+            const typeArray = array(corlib.class("System.Type"), types);
 
-            const inflatedMethodObject = this.object.method<Il2Cpp.Object>("MakeGenericMethod", 1).invoke(typeArray);
-            return new Il2Cpp.Method(Il2Cpp.api.methodGetFromReflection(inflatedMethodObject));
+            const inflatedMethodObject = this.object.method<Object>("MakeGenericMethod", 1).invoke(typeArray);
+            return new Method(api.methodGetFromReflection(inflatedMethodObject));
         }
 
         /** Invokes this method. */
-        invoke(...parameters: Il2Cpp.Parameter.Type[]): T {
+        invoke(...parameters: Parameter.Type[]): T {
             if (!this.isStatic) {
-                raise(`cannot invoke non-static method ${this.name} as it must be invoked throught a Il2Cpp.Object, not a Il2Cpp.Class`);
+                raise(`cannot invoke non-static method ${this.name} as it must be invoked throught a Object, not a Class`);
             }
             return this.invokeRaw(NULL, ...parameters);
         }
 
         /** @internal */
-        invokeRaw(instance: NativePointerValue, ...parameters: Il2Cpp.Parameter.Type[]): T {
+        invokeRaw(instance: NativePointerValue, ...parameters: Parameter.Type[]): T {
             const allocatedParameters = parameters.map(toFridaValue);
 
-            if (!this.isStatic || Il2Cpp.unityVersionIsBelow201830) {
+            if (!this.isStatic || unityVersionIsBelow201830) {
                 allocatedParameters.unshift(instance);
             }
 
@@ -218,7 +218,7 @@ namespace Il2Cpp {
         }
 
         /** Gets the overloaded method with the given parameter types. */
-        overload(...parameterTypes: string[]): Il2Cpp.Method<T> {
+        overload(...parameterTypes: string[]): Method<T> {
             const result = this.tryOverload<T>(...parameterTypes);
 
             if (result != undefined) return result;
@@ -227,7 +227,7 @@ namespace Il2Cpp {
         }
 
         /** Gets the parameter with the given name. */
-        parameter(name: string): Il2Cpp.Parameter {
+        parameter(name: string): Parameter {
             return this.tryParameter(name) ?? raise(`couldn't find parameter ${name} in method ${this.name}`);
         }
 
@@ -238,18 +238,18 @@ namespace Il2Cpp {
         }
 
         /** Gets the overloaded method with the given parameter types. */
-        tryOverload<U extends Il2Cpp.Method.ReturnType = T>(...parameterTypes: string[]): Il2Cpp.Method<U> | undefined {
+        tryOverload<U extends Method.ReturnType = T>(...parameterTypes: string[]): Method<U> | undefined {
             return this.class.methods.find(method => {
                 return (
                     method.name == this.name &&
                     method.parameterCount == parameterTypes.length &&
                     method.parameters.every((e, i) => e.type.name == parameterTypes[i])
                 );
-            }) as Il2Cpp.Method<U> | undefined;
+            }) as Method<U> | undefined;
         }
 
         /** Gets the parameter with the given name. */
-        tryParameter(name: string): Il2Cpp.Parameter | undefined {
+        tryParameter(name: string): Parameter | undefined {
             return this.parameters.find(_ => _.name == name);
         }
 
@@ -264,9 +264,9 @@ ${this.virtualAddress.isNull() ? `` : ` // 0x${this.relativeVirtualAddress.toStr
         }
 
         /** @internal */
-        withHolder(instance: Il2Cpp.Object): Il2Cpp.Method<T> {
+        withHolder(instance: Object): Method<T> {
             return new Proxy(this, {
-                get(target: Il2Cpp.Method<T>, property: keyof Il2Cpp.Method<T>): any {
+                get(target: Method<T>, property: keyof Method<T>): any {
                     switch (property) {
                         case "invoke":
                             return target.invokeRaw.bind(target, instance.handle);
@@ -284,11 +284,11 @@ ${this.virtualAddress.isNull() ? `` : ` // 0x${this.relativeVirtualAddress.toStr
         }
 
         /** @internal */
-        wrap(block: (this: Il2Cpp.Class | Il2Cpp.Object, ...parameters: any[]) => T): NativeCallback<any, any> {
-            const startIndex = +!this.isStatic | +Il2Cpp.unityVersionIsBelow201830;
+        wrap(block: (this: Class | Object, ...parameters: any[]) => T): NativeCallback<any, any> {
+            const startIndex = +!this.isStatic | +unityVersionIsBelow201830;
             // prettier-ignore
             return new NativeCallback((...args: any[]): any => {
-                const thisObject = this.isStatic ? this.class : new Il2Cpp.Object(args[0]);
+                const thisObject = this.isStatic ? this.class : new Object(args[0]);
                 const parameters = this.parameters.map((e, i) => fromFridaValue(args[i + startIndex], e.type));
                 const result = block.call(thisObject, ...parameters) as any;
                 return toFridaValue(result);
@@ -297,7 +297,7 @@ ${this.virtualAddress.isNull() ? `` : ` // 0x${this.relativeVirtualAddress.toStr
     }
 
     export namespace Method {
-        export type ReturnType = void | Il2Cpp.Field.Type;
+        export type ReturnType = void | Field.Type;
 
         export const enum Attributes {
             MemberAccessMask = 0x0007,

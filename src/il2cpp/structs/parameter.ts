@@ -7,9 +7,9 @@ namespace Il2Cpp {
         readonly position: number;
 
         /** Type of this parameter. */
-        readonly type: Il2Cpp.Type;
+        readonly type: Type;
 
-        constructor(name: string, position: number, type: Il2Cpp.Type) {
+        constructor(name: string, position: number, type: Type) {
             this.name = name;
             this.position = position;
             this.type = type;
@@ -22,6 +22,6 @@ namespace Il2Cpp {
     }
 
     export namespace Parameter {
-        export type Type = Il2Cpp.Field.Type | Il2Cpp.Reference;
+        export type Type = Field.Type | Reference;
     }
 }
