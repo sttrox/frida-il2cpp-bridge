@@ -222,6 +222,7 @@ namespace Il2Cpp {
             const typeArray = array(corlib.class("System.Type"), types);
 
             const inflatedType = this.type.object.method<Object>("MakeGenericType", 1).invoke(typeArray);
+
             return new Class(api.classFromSystemType(inflatedType));
         }
 

@@ -574,11 +574,10 @@ namespace Il2Cpp {
         SystemDateTime.initialize();
         SystemReflectionModule.initialize();
 
-        const DaysToMonth365 = (
-            SystemDateTime.tryField<Array<number>>("daysmonth") ??
-            SystemDateTime.tryField<Array<number>>("DaysToMonth365") ??
-            SystemDateTime.field<Array<number>>("s_daysToMonth365")
-        ).value;
+        const DaysToMonth365 =
+            SystemDateTime.tryField<Array<number>>("daysmonth")?.value ??
+            SystemDateTime.tryField<Array<number>>("DaysToMonth365")?.value ??
+            SystemDateTime.field<Array<number>>("s_daysToMonth365")?.value;
 
         const FilterTypeName = SystemReflectionModule.field<Object>("FilterTypeName").value;
         const FilterTypeNameMethodPointer = FilterTypeName.field<NativePointer>("method_ptr").value;
@@ -612,13 +611,9 @@ namespace Il2Cpp {
     }
 
     function r<R extends NativeFunctionReturnType, A extends NativeFunctionArgumentType[] | []>(exportName: string, retType: R, argTypes: A) {
-        const exportPointer = module.findExportByName(exportName) ?? (cModule ??= buildCModule())[exportName];
+        const handle = module.findExportByName(exportName) ?? (cModule ??= buildCModule())[exportName];
 
-        if (exportPointer == null) {
-            raise(`couldn't resolve export ${exportName}`);
-        }
-
-        return new NativeFunction(exportPointer, retType, argTypes);
+        return new NativeFunction(handle ?? raise(`couldn't resolve export ${exportName}`), retType, argTypes);
     }
 
     declare const $inline_file: typeof import("ts-transformer-inline-file").$INLINE_FILE;
