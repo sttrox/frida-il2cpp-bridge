@@ -17,7 +17,7 @@ namespace Il2Cpp {
         },
 
         get assemblyGetImage() {
-            return r("il2cpp_assembly_get_image", "pointer", ["pointer"]);
+            return r("il2cpp_image_get_assembly", "pointer", ["pointer"]);
         },
 
         get classForEach() {
